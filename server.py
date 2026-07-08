@@ -62,7 +62,8 @@ requests.Session.__init__ = bypass_requests_ssl
 #  HUGGING FACE INFERENCE CONFIGURATION
 # -------------------------------------------------------------
 #  Paste your actual 'hf_...' token key string here:
-HF_TOKEN = "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"
+
+HF_TOKEN_ = os.getenv("HF_TOKEN")
 
 # Enterprise-grade open-source instruction model hosted on Hugging Face Serverless infrastructure
 TARGET_MODEL = "Qwen/Qwen2.5-7B-Instruct"
