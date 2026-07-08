@@ -1,10 +1,10 @@
-import os
-import logging
-from logging.handlers import RotatingFileHandler
+# server.py
 import os
 import sys
 import json
 import httpx
+import logging
+from logging.handlers import RotatingFileHandler
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -13,44 +13,48 @@ from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from fastapi.middleware.cors import CORSMiddleware
 from huggingface_hub import InferenceClient 
-import logging
-# Ensure log directory exists
+import requests
 
+# 🌟 1. LOAD DOTENV AT THE ABSOLUTE TOP OF EXECUTION 🌟
+from dotenv import load_dotenv
+load_dotenv()
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = os.path.join(current_dir, ".env")
+load_dotenv(dotenv_path=env_path)
+
+# Logger setup
 logger = logging.getLogger("rag_app")
 logger.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
 
-# Formatter
-formatter = logging.Formatter(
-    "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
-)
-
-# Info log file
 file_handler = logging.FileHandler("app.log")
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 
-# Error log file (separate)
 error_handler = logging.FileHandler("error.log")
 error_handler.setLevel(logging.ERROR)
 error_handler.setFormatter(formatter)
 
-# Console output
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 
-# Attach handlers
 logger.addHandler(file_handler)
 logger.addHandler(error_handler)
 logger.addHandler(stream_handler)
 
-
-
-#  1. GLOBAL SSL BYPASS FOR CORPORATE LAPTOP
+# 🛡️ 2. GLOBAL SSL BYPASS FOR CORPORATE LAPTOP
 os.environ["CURL_CA_BUNDLE"] = ""  
 os.environ["HTTPX_VERIFY"] = "False" 
 os.environ["NO_PROXY"] = "huggingface.co,api-inference.huggingface.co"
 
-import requests
+# Rest of your SSL bypass hook definitions...
+urllib3_warnings = True
+try:
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except ImportError:
+    pass
 requests.packages.urllib3.disable_warnings()
 original_requests_init = requests.Session.__init__
 def bypass_requests_ssl(self, *args, **kwargs):
@@ -58,14 +62,19 @@ def bypass_requests_ssl(self, *args, **kwargs):
     self.verify = False
 requests.Session.__init__ = bypass_requests_ssl
 
-# -------------------------------------------------------------
-#  HUGGING FACE INFERENCE CONFIGURATION
-# -------------------------------------------------------------
-#  Paste your actual 'hf_...' token key string here:
+#  3. ASSIGN THE TOKEN NOW THAT LOAD_DOTENV RUN
+HF_TOKEN = os.getenv("HF_TOKEN") 
+if not HF_TOKEN:
+    logger.warning("Warning: Could not find 'HF_TOKEN' in your .env file. Checking fallback...")
+    
+    # HARDCODING FALLBACK (Only use this to test if your .env parser is broken!)
+    # If your .env file isn't working, you can paste your string here directly as a test:
+    # HF_TOKEN = "hf_your_actual_token_here"
 
-HF_TOKEN_ = os.getenv("HF_TOKEN")
+if not HF_TOKEN:
+    logger.error("CRITICAL: HF_TOKEN is completely empty! The Hugging Face API will crash.")
 
-# Enterprise-grade open-source instruction model hosted on Hugging Face Serverless infrastructure
+
 TARGET_MODEL = "Qwen/Qwen2.5-7B-Instruct"
 
 # -------------------------------------------------------------
