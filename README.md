@@ -46,8 +46,9 @@ Clone the repository, create a virtual environment, and install the necessary de
 
 # Run local 
 
-ollama run qwen2.5:0.5b
-ollama run tinyllama
+1.ollama run qwen2.5:0.5b
+
+2.ollama run tinyllama
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Running the Application
