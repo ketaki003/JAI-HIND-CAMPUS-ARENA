@@ -13,28 +13,6 @@ An intelligent, stateful, and resilient Retrieval-Augmented Generation (RAG) cha
 
 ---
 
-## System Architecture
-┌──────────────────────────────┐
-|    Gradio UI Frontend        |
-└──────────────┬───────────────┘
-               │ (Passes Text + Unique Session ID)
-                             ▼
-              ┌──────────────────────────────┐
-              │   Backend Orchestrator API   │
-              └──────┬────────────────┬──────┘
-                     │                │
- (Read/Write History)│                │(Vector Search Chunks)
-                     ▼                ▼
- ┌───────────────────────┐        ┌───────────────────────┐
- │  SQLite Database File │        │ Local Qdrant Storage  │
- │ (`chatbot_history.db`)│        │  (`all-MiniLM-L6-v2`) │
- └───────────────────────┘        └───────────────────────┘
-                     │
-                     ▼
- ┌────────────────────────────────────────┐
- │ Local LLM Server (Ollama Backend)      │
- │ Choices: qwen2.5:0.5b / tinyllama      │
- └────────────────────────────────────────┘
 ---
 
 ## Database Specifications
