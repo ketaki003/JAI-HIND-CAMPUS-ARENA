@@ -52,17 +52,23 @@ Clone the repository, create a virtual environment, and install the necessary de
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Running the Application
-Step 1: Prepare Ingestion Data
+
+Step 1: Prepare Ingestion Data :
+
 Make sure your scraped data file jai_hind_chunks.json is located directly in your root project directory. The application lifespan manager will auto-detect it and construct the vector embedding database index on its very first launch.
 
-Step 2: Spin Up the FastAPI Backend Server
+Step 2: Spin Up the FastAPI Backend Server:
+
 Run the orchestrator backend. This initializes the SQLite databases, loads the SentenceTransformer framework, and establishes local client tunnels.
 
 -----Bash
+
 ------> python server.py
 
-Step 3: Launch the Gradio UI Frontend
+Step 3: Launch the Gradio UI Frontend:
+
 ---------Bash
+
 ---------> python gradio_app.py
 
 
