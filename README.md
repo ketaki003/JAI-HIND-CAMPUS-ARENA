@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Jai Hind College Chatbot
 
 This repository contains a local chatbot stack for Jai Hind College (Autonomous), Mumbai.
