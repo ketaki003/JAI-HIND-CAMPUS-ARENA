@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import uuid
+import time
 import httpx
 import logging
 import sqlite3
@@ -21,26 +22,26 @@ class ChatResponse(BaseModel):
     answer: str
 
 # =============================================================
-# 1. PERMANENT LOGGING OVERHAUL
+# 1. ENHANCED PRODUCTION LOGGING SETUP
 # =============================================================
 logger = logging.getLogger("rag_app")
 logger.setLevel(logging.INFO)
 
-# Prevent duplicate handlers if the server reloads during execution
 if not logger.handlers:
-    formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
+    # Detailed log format capturing timestamp, level, logger name, and thread/process info
+    formatter = logging.Formatter(
+        "[%(asctime)s] [%(levelname)s] [%(name)s] [Thread-%(thread)d] - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
-    # File handler for standard runtime details
     file_handler = logging.FileHandler("app.log", encoding="utf-8")
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
 
-    # File handler for tracking system bugs and exceptions
     error_handler = logging.FileHandler("error.log", encoding="utf-8")
     error_handler.setLevel(logging.ERROR)
     error_handler.setFormatter(formatter)
 
-    # Terminal stream handler so you see logs live in the console
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.INFO)
     stream_handler.setFormatter(formatter)
@@ -49,7 +50,6 @@ if not logger.handlers:
     logger.addHandler(error_handler)
     logger.addHandler(stream_handler)
 
-# Disable corporate SSL bundle flags for local network ease
 os.environ["HTTPX_VERIFY"] = "False" 
 
 OLLAMA_URL = "http://127.0.0.1:11434/v1/chat/completions"
@@ -67,8 +67,6 @@ VECTOR_DIMENSION = 384
 def init_sqlite_db():
     connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
-    
-    # Structural schema capturing combined turns and mapping user ids
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -80,16 +78,12 @@ def init_sqlite_db():
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """)
-    
-    # Indexes updated for dual tracking efficiency
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_session ON messages(user_id, session_id)")
-    
     connection.commit()
     connection.close()
     logger.info("SQLite multi-user database initialized successfully.")
 
 async def insert_chat_turn(user_id: str, session_id: str, question: str, answer: str, chunk: str = ""):
-    """Saves a complete conversation turn into a single row entry."""
     async with aiosqlite.connect(DB_FILE) as db:
         await db.execute(
             "INSERT INTO messages (user_id, session_id, question, answer, chunk) VALUES (?, ?, ?, ?, ?)",
@@ -98,7 +92,6 @@ async def insert_chat_turn(user_id: str, session_id: str, question: str, answer:
         await db.commit()
 
 async def retrieve_messages(user_id: str, session_id: str, limit: int = 6):
-    """Retrieves previous turns for prompt rendering, formatted chronologically."""
     async with aiosqlite.connect(DB_FILE) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -106,7 +99,6 @@ async def retrieve_messages(user_id: str, session_id: str, limit: int = 6):
             (user_id, session_id, limit)
         ) as cursor:
             rows = await cursor.fetchall()
-            
             normalized_history = []
             for r in reversed(rows):
                 normalized_history.append({"role": "user", "content": r["question"]})
@@ -114,7 +106,6 @@ async def retrieve_messages(user_id: str, session_id: str, limit: int = 6):
             return normalized_history
 
 async def generate_ai_title(first_question: str) -> str:
-    """Uses Ollama to convert the user's initial prompt into a clean 3-4 word topic title (Gemini/ChatGPT style)."""
     if not first_question:
         return "New Conversation"
     
@@ -144,7 +135,6 @@ async def generate_ai_title(first_question: str) -> str:
                 else:
                     title = first_question[:30]
                 
-                # Clean up quotes if present
                 clean_title = title.replace('"', '').replace("'", "").strip()
                 return (clean_title[:35] + "...") if len(clean_title) > 35 else clean_title
     except Exception as e:
@@ -175,7 +165,6 @@ async def list_conversation_summaries(user_id: str = "user1"):
             title_row = await title_cursor.fetchone()
             if title_row and title_row[0]:
                 raw_question = title_row[0].strip()
-                # Generate AI Topic Title (Option 3)
                 clean_title = await generate_ai_title(raw_question)
             else:
                 clean_title = f"Chat ({session_id[:8]})"   
@@ -190,25 +179,8 @@ async def list_conversation_summaries(user_id: str = "user1"):
             )
         return summaries
 
-def normalize_history(history: Any):
-    if not history:
-        return []
-
-    normalized = []
-    for item in history:
-        if isinstance(item, dict):
-            role = item.get("role") or item.get("type")
-            content = item.get("content") or item.get("text")
-            if role and content:
-                normalized.append({"role": str(role), "content": str(content)})
-        elif isinstance(item, (list, tuple)) and len(item) >= 2:
-            role, content = item[0], item[1]
-            if role and content:
-                normalized.append({"role": str(role), "content": str(content)})
-    return normalized
-
 # =============================================================
-# 2. APPLICATION LIFECYCLE (DB STARTUP & TEXT INGESTION)
+# 2. APPLICATION LIFECYCLE
 # =============================================================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -278,7 +250,7 @@ async def lifespan(app: FastAPI):
     await qdrant_client.close()
     logger.info("Database connection closed cleanly.")
 
-app = FastAPI(title="Campus RAG API Gateway Service (Ollama Offline Edition)", lifespan=lifespan)
+app = FastAPI(title="Campus RAG API Gateway Service", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -302,21 +274,34 @@ class ChatResponse(BaseModel):
     answer: str
 
 # =============================================================
-# 4. CHAT PROCESSING ENDPOINT WITH ACCURACY CONTROLS
+# 4. CHAT ENDPOINT WITH DETAILED PRODUCTION LOGGING
 # =============================================================
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     global model, qdrant_client
+    start_time = time.time()
+    
     user_query = request.question.strip()
     active_model = request.selected_model 
     session_id = request.session_id or "default-session"
     user_id = request.user_id or "user1"
     
     if not user_query:
+        logger.warning(f"[USER: {user_id} | SESSION: {session_id}] Blank query submission rejected.")
         raise HTTPException(status_code=400, detail="Question field cannot be blank.")
-        
+
+    # 1. Log Incoming Request Details
+    logger.info(f"==================== NEW INCOMING CHAT REQUEST ====================")
+    logger.info(f"[REQUEST METADATA] User ID: '{user_id}' | Session ID: '{session_id}' | Model: '{active_model}'")
+    logger.info(f"[USER QUERY] Character Length: {len(user_query)} | Content: \"{user_query}\"")
+
     try:
+        # Load conversation history context
         history = await retrieve_messages(user_id, session_id, limit=3)
+        logger.info(f"[HISTORY] Loaded {len(history)} previous turns from SQLite history.")
+
+        # 2. Vector Embedding & Retrieval Latency Tracking
+        retrieval_start = time.time()
         query_dense = model.encode(user_query).tolist()
         hits = []
 
@@ -329,17 +314,37 @@ async def chat_endpoint(request: ChatRequest):
             else:
                 hits = []
         except Exception as db_err:
-            logger.error(f"Error while querying Qdrant: {db_err}; proceeding with empty context.")
+            logger.error(f"[QDRANT ERROR] Failure during vector search: {db_err}; proceeding with fallback.")
             hits = []           
 
+        retrieval_latency = round((time.time() - retrieval_start) * 1000, 2)
+
+        # 3. Log Retrieved Chunks, Scores, and Preview Content
         retrieved_chunks = []
-        for hit in hits or []:
+        logger.info(f"[RETRIEVAL] Qdrant search finished in {retrieval_latency}ms. Retrieved {len(hits)} hits.")
+
+        for idx, hit in enumerate(hits or [], start=1):
             payload = getattr(hit, "payload", hit.get("payload") if isinstance(hit, dict) else None)
+            score = getattr(hit, "score", "N/A")
+            
             if isinstance(payload, dict) and payload.get("text"):
-                retrieved_chunks.append(payload["text"])
+                chunk_text = payload["text"]
+                source_url = payload.get("source", "N/A")
+                chunk_size = len(chunk_text)
+                retrieved_chunks.append(chunk_text)
 
+                # Snippet preview for terminal / log readability
+                preview_snippet = chunk_text[:120].replace('\n', ' ') + "..."
+                logger.info(
+                    f"  ├─ [Chunk #{idx}] Score: {score} | Size: {chunk_size} chars | Source: {source_url}"
+                )
+                logger.info(f"  │  Snippet: \"{preview_snippet}\"")
+
+        total_context_size = sum(len(c) for c in retrieved_chunks)
         context = "\n\n".join(retrieved_chunks) if retrieved_chunks else "No relevant context found in local records."
+        logger.info(f"[CONTEXT SUMMARY] Total Injected Context Size: {total_context_size} characters across {len(retrieved_chunks)} chunks.")
 
+        # System Prompt Assembly
         system_instruction = (
             "You are a friendly, warm, and helpful senior student guide at Jai Hind College (Autonomous), Mumbai.\n"
             "Chat naturally like a real human student ambassador. Use first-person language ('I', 'we', 'our campus') "
@@ -363,15 +368,12 @@ async def chat_endpoint(request: ChatRequest):
         )
 
         ollama_messages = [{"role": "system", "content": system_instruction}]
-        
         for turn in history:
-            ollama_messages.append({
-                "role": turn["role"],
-                "content": turn["content"]
-            })
-         
+            ollama_messages.append({"role": turn["role"], "content": turn["content"]})
         ollama_messages.append({"role": "user", "content": user_query})
 
+        # 4. LLM Generation Latency & Payload Tracking
+        llm_start = time.time()
         async with httpx.AsyncClient(verify=False) as client:
             ollama_payload = {
                 "model": active_model,
@@ -400,13 +402,23 @@ async def chat_endpoint(request: ChatRequest):
                     bot_response = "I’m having trouble processing the reply from the model service."
             else:
                 bot_response = "I’m having trouble processing information right now."
-            
+
+        llm_latency = round((time.time() - llm_start) * 1000, 2)
+        total_request_latency = round((time.time() - start_time) * 1000, 2)
+
+        # 5. Final Output & Telemetry Logging
+        logger.info(f"[LLM GENERATION] Ollama call finished in {llm_latency}ms.")
+        logger.info(f"[RESPONSE METRICS] Generated Answer Size: {len(bot_response)} chars | Total End-to-End Latency: {total_request_latency}ms")
+        logger.info(f"[GENERATED ANSWER PREVIEW] \"{bot_response[:150].replace('\n', ' ')}...\"")
+
         await insert_chat_turn(user_id, session_id, user_query, bot_response, context)
+        logger.info(f"[DATABASE] Chat turn successfully recorded into SQLite database.")
+        logger.info(f"=================================================================\n")
         
         return ChatResponse(answer=bot_response)
 
     except Exception as e:
-        logger.exception("Core API Gateway Processing Fault encountered: %s", e)
+        logger.exception(f"[CRITICAL ERROR] Pipeline crash during query processing: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/conversations")
