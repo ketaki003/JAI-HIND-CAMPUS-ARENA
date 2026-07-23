@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Jai Hind College Chatbot
 
 This repository contains a local chatbot stack for Jai Hind College (Autonomous), Mumbai.
@@ -136,3 +137,6 @@ If Gradio warns about theme parameters, the current setup passes `theme` to `lau
 ## License
 
 No license is specified.
+=======
+
+>>>>>>> 9120bf8179dbb06758b08e5c63d87361f71d96e8

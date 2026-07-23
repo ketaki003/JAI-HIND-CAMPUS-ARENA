@@ -1,30 +1,31 @@
+# init_db.py
 import sqlite3
 
 def setup_chat_database():
-    # This automatically creates a file named 'chatbot_history.db' in your folder if it doesn't exist
+    # Automatically creates 'chatbot_history.db' with the new single-row turn structure
     connection = sqlite3.connect("chatbot_history.db")
-    
-    # The cursor allows us to execute SQL commands
     cursor = connection.cursor()
     
-    # Create the table structure to store chat logs
+    # Create the table structure storing user_id, session_id, question, and answer together
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,
             session_id TEXT NOT NULL,
-            role TEXT NOT NULL,
-            content TEXT NOT NULL,
+            question TEXT NOT NULL,
+            answer TEXT NOT NULL,
+            chunk TEXT,       
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                   
         )
     """)
     
-    # Create an index on session_id to ensure fast lookups during long conversations
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_session ON messages(session_id)")
+    # Composite index for ultra-fast lookups by user and session ID
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_session ON messages(user_id, session_id)")
     
-    # Commit saves the changes permanently to the disk file
     connection.commit()
     connection.close()
-    print("Database and indexing initialized successfully.")
+    print("Database and multi-user indexing initialized successfully.")
 
 if __name__ == "__main__":
     setup_chat_database()
