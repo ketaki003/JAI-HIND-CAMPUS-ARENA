@@ -2,9 +2,10 @@ import gradio as gr
 import requests 
 import uuid
 
-# Base URL matching your FastAPI backend configuration
+# Base URLs for backend and direct LLM calls
 API_URL = "http://127.0.0.1:8000/api/chat"
 CONVERSATIONS_URL = "http://127.0.0.1:8000/api/conversations"
+OLLAMA_DIRECT_URL = "http://127.0.0.1:11434/v1/chat/completions"
 
 def get_saved_choices(saved_conversations):
     """Formats saved conversations list into (Title, session_id) tuples for Gradio dropdown."""
@@ -37,8 +38,8 @@ def fetch_single_conversation(session_id, user_id):
         pass
     return []
 
-def chat_with_college_bot(message, history, selected_model, session_id, user_id, saved_conversations):
-    """Sends user query to FastAPI backend and updates active history."""
+def chat_with_college_bot(message, history, selected_model, execution_mode, session_id, user_id, saved_conversations):
+    """Handles query processing via FastAPI RAG pipeline or Direct Ollama API Call."""
     dropdown_choices = get_saved_choices(saved_conversations)
 
     if not message or not str(message).strip():
@@ -46,33 +47,57 @@ def chat_with_college_bot(message, history, selected_model, session_id, user_id,
         return safe_history, safe_history, session_id, saved_conversations, gr.update(choices=dropdown_choices, value=session_id)
 
     safe_history = list(history or [])
-    safe_history.append({"role": "user", "content": str(message).strip()})
+    clean_message = str(message).strip()
+    safe_history.append({"role": "user", "content": clean_message})
 
-    payload = {
-        "question": str(message).strip(),
-        "selected_model": selected_model,
-        "session_id": session_id,
-        "user_id": user_id or "user1",
-        "history": safe_history,
-    }
+    # OPTION A: DIRECT API CALL (Bypasses FastAPI, Qdrant Vector Search, and SQLite Context)
+    if execution_mode == "Direct API Call (Ollama)":
+        payload = {
+            "model": selected_model,
+            "messages": [{"role": "user", "content": clean_message}],
+            "options": {"temperature": 0.2}
+        }
+        try:
+            response = requests.post(OLLAMA_DIRECT_URL, json=payload, timeout=60)
+            if response.status_code == 200:
+                result = response.json()
+                if "choices" in result:
+                    answer = result["choices"][0]["message"]["content"]
+                elif "message" in result:
+                    answer = result["message"].get("content", "")
+                else:
+                    answer = "No clear response payload received from direct API."
+            else:
+                answer = f"Direct API Error ({response.status_code}): {response.text}"
+        except requests.exceptions.ConnectionError:
+            answer = "Connection Failed: Could not reach Ollama directly on port 11434. Ensure Ollama is running."
+        except Exception as e:
+            answer = f"Direct API Error: {str(e)}"
 
-    try:
-        response = requests.post(API_URL, json=payload, verify=False, timeout=120)
-
-        if response.status_code == 200:
-            result = response.json()
-            answer = result.get("answer", "No response received.")
-        else:
-            answer = f"Server Error ({response.status_code}): {response.text}"
-
-    except requests.exceptions.ConnectionError:
-        answer = "Connection Failed: Could not connect to the FastAPI backend. Ensure server.py is running on port 8000."
-    except Exception as e:
-        answer = f"An unexpected error occurred: {str(e)}"
+    # OPTION B: FULL RAG PIPELINE (FastAPI + Qdrant Vector Search + SQLite Context)
+    else:
+        payload = {
+            "question": clean_message,
+            "selected_model": selected_model,
+            "session_id": session_id,
+            "user_id": user_id or "user1",
+            "history": safe_history,
+        }
+        try:
+            response = requests.post(API_URL, json=payload, verify=False, timeout=120)
+            if response.status_code == 200:
+                result = response.json()
+                answer = result.get("answer", "No response received.")
+            else:
+                answer = f"Server Error ({response.status_code}): {response.text}"
+        except requests.exceptions.ConnectionError:
+            answer = "Connection Failed: Could not connect to FastAPI backend. Ensure server.py is running on port 8000."
+        except Exception as e:
+            answer = f"An unexpected error occurred: {str(e)}"
 
     safe_history.append({"role": "assistant", "content": answer})
     
-    # Refresh saved conversations list from database
+    # Refresh saved conversations list from backend
     updated_saved = fetch_conversations_from_server(user_id) or saved_conversations
     dropdown_choices = get_saved_choices(updated_saved)
 
@@ -121,9 +146,17 @@ with gr.Blocks() as demo:
             model_dropdown = gr.Dropdown(
                 choices=["tinyllama", "qwen2.5:0.5b"],
                 value="qwen2.5:0.5b",
-                label="Select model",
+                label="Select Model",
             )
-            user_id_input = gr.State(value=lambda: f"user-{uuid.uuid4().hex[:6]}")
+            
+            # Selector for execution mode
+            mode_radio = gr.Radio(
+                choices=["RAG Pipeline (FastAPI)", "Direct API Call (Ollama)"],
+                value="RAG Pipeline (FastAPI)",
+                label="Execution Mode",
+                info="Choose between full RAG vector search or querying the raw LLM directly."
+            )
+
             new_chat_btn = gr.Button("➕ New Chat")
             
             gr.Markdown("#### Saved Conversations")
@@ -135,7 +168,7 @@ with gr.Blocks() as demo:
             )
 
         with gr.Column(scale=3):
-            chatbot = gr.Chatbot( height=550)
+            chatbot = gr.Chatbot(height=550)
             text_input = gr.Textbox(
                 placeholder="Ask about admissions, courses, fees, or campus info...",
                 show_label=False,
@@ -155,13 +188,13 @@ with gr.Blocks() as demo:
 
     send_btn.click(
         chat_with_college_bot,
-        inputs=[text_input, chat_history_state, model_dropdown, session_state, user_id_state, saved_conversations_state],
+        inputs=[text_input, chat_history_state, model_dropdown, mode_radio, session_state, user_id_state, saved_conversations_state],
         outputs=[chatbot, chat_history_state, session_state, saved_conversations_state, saved_chats_dropdown],
     ).then(lambda: "", None, text_input)
 
     text_input.submit(
         chat_with_college_bot,
-        inputs=[text_input, chat_history_state, model_dropdown, session_state, user_id_state, saved_conversations_state],
+        inputs=[text_input, chat_history_state, model_dropdown, mode_radio, session_state, user_id_state, saved_conversations_state],
         outputs=[chatbot, chat_history_state, session_state, saved_conversations_state, saved_chats_dropdown],
     ).then(lambda: "", None, text_input)
 
