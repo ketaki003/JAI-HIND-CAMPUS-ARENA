@@ -1,12 +1,15 @@
+# crawl.py
+import asyncio
 import os
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
-import time
-import io
 import re
 import logging
+from urllib.parse import urlparse
+import requests
 from pypdf import PdfReader
+
+from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, BrowserConfig
+from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
+from crawl4ai.content_filter_strategy import PruningContentFilter
 
 # ==============================
 # CONFIGURATION
@@ -27,173 +30,122 @@ IMPORTANT_KEYWORDS = [
     "department", "faculty", "program", "syllabus"
 ]
 
-MAX_PAGES = 200   # limit crawl size
-
-# ==============================
-# SETUP
-# ==============================
-requests.packages.urllib3.disable_warnings()
-
+MAX_PAGES = 200
 OUTPUT_DIR = "jai_hind_scraped_data"
-TEXT_DIR = os.path.join(OUTPUT_DIR, "pages")
+PAGES_DIR = os.path.join(OUTPUT_DIR, "pages")
 PDF_DIR = os.path.join(OUTPUT_DIR, "pdfs")
 
-os.makedirs(TEXT_DIR, exist_ok=True)
+os.makedirs(PAGES_DIR, exist_ok=True)
 os.makedirs(PDF_DIR, exist_ok=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-visited_urls = set()
-urls_to_visit = [START_URL] + SEED_TARGETS
 
-
-# ==============================
-# HELPERS
-# ==============================
 def sanitize_filename(url):
     path = urlparse(url).path
     if not path or path == "/":
-        return "homepage.txt"
+        return "homepage.md"
     filename = re.sub(r'[\\/*?:"<>|]', "_", path.strip("/"))
-    return filename if filename.endswith(".txt") else f"{filename}.txt"
-
-
-def clean_text(text):
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
+    return f"{filename}.md"
 
 
 def extract_pdf_text(pdf_bytes):
     try:
-        pdf_file = io.BytesIO(pdf_bytes)
-        reader = PdfReader(pdf_file)
-        text = []
-
-        for page in reader.pages:
-            extracted = page.extract_text()
-            if extracted:
-                text.append(extracted)
-
-        return "\n".join(text)
-
+        from io import BytesIO
+        reader = PdfReader(BytesIO(pdf_bytes))
+        text = [page.extract_text() for page in reader.pages if page.extract_text()]
+        return "\n\n".join(text)
     except Exception as e:
         return f"[PDF PARSE ERROR: {e}]"
 
 
-# ==============================
-# SCRAPER START
-# ==============================
-logging.info(f"Starting scrape: {START_URL}")
+async def main():
+    visited_urls = set()
+    urls_to_visit = [START_URL] + SEED_TARGETS
 
-while urls_to_visit:
+    # Set up Crawl4AI with PruningContentFilter to eliminate layout noise
+    md_generator = DefaultMarkdownGenerator(
+        content_filter=PruningContentFilter(threshold=0.45, min_word_threshold=10)
+    )
 
-    # LIMIT CONTROL
-    if len(visited_urls) >= MAX_PAGES:
-        logging.info("Reached MAX_PAGES limit. Stopping crawl.")
-        break
+    browser_config = BrowserConfig(headless=True)
+    run_config = CrawlerRunConfig(
+        markdown_generator=md_generator,
+        word_count_threshold=20
+    )
 
-    current_url = urls_to_visit.pop(0).split('#')[0]
+    async with AsyncWebCrawler(config=browser_config) as crawler:
+        while urls_to_visit and len(visited_urls) < MAX_PAGES:
+            current_url = urls_to_visit.pop(0).split('#')[0]
 
-    if current_url in visited_urls:
-        continue
+            if current_url in visited_urls:
+                continue
 
-    try:
-        time.sleep(0.5)
+            # ==============================
+            # HANDLE PDF DOCUMENTS
+            # ==============================
+            if current_url.lower().endswith(".pdf") or "/uploads" in current_url.lower():
+                logging.info(f"Fetching PDF: {current_url}")
+                visited_urls.add(current_url)
+                try:
+                    res = requests.get(current_url, timeout=15, verify=False)
+                    if res.status_code == 200 and 'application/pdf' in res.headers.get('Content-Type', '').lower():
+                        pdf_md = extract_pdf_text(res.content)
+                        filename = sanitize_filename(current_url).replace(".md", "_pdf.md")
+                        with open(os.path.join(PDF_DIR, filename), "w", encoding="utf-8") as f:
+                            f.write(f"URL: {current_url}\nTITLE: PDF Document\n\n{pdf_md}")
+                except Exception as e:
+                    logging.warning(f"Error fetching PDF {current_url}: {e}")
+                continue
 
-        # ==============================
-        # HANDLE PDF
-        # ==============================
-        if current_url.lower().endswith(".pdf") or "/uploads" in current_url.lower():
-            logging.info(f"Processing PDF: {current_url}")
+            # ==============================
+            # CRAWL WEBPAGE USING CRAWL4AI
+            # ==============================
+            logging.info(f"Crawling: {current_url}")
             visited_urls.add(current_url)
 
-            response = requests.get(current_url, timeout=15, verify=False)
+            try:
+                result = await crawler.arun(url=current_url, config=run_config)
 
-            if response.status_code == 200 and 'application/pdf' in response.headers.get('Content-Type', '').lower():
-                pdf_text = extract_pdf_text(response.content)
+                if not result.success:
+                    continue
 
-                filename = sanitize_filename(current_url).replace(".txt", "_pdf.txt")
+                # Get clean markdown output
+                markdown_content = result.markdown.fit_markdown or result.markdown.raw_markdown
 
-                with open(os.path.join(PDF_DIR, filename), "w", encoding="utf-8") as f:
-                    f.write(f"URL: {current_url}\n\n{pdf_text}")
+                if not markdown_content:
+                    continue
 
-            continue
+                # Save markdown output
+                filename = sanitize_filename(current_url)
+                file_path = os.path.join(PAGES_DIR, filename)
 
-        # ==============================
-        # HANDLE HTML PAGE
-        # ==============================
-        response = requests.get(current_url, timeout=15, verify=False)
+                page_title = result.metadata.get("title", "Jai Hind College") if result.metadata else "Jai Hind College"
 
-        if response.status_code != 200:
-            continue
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(f"URL: {current_url}\nTITLE: {page_title}\n\n{markdown_content}")
 
-        visited_urls.add(current_url)
+                # ==============================
+                # DISCOVER NEW LINKS
+                # ==============================
+                for link in result.links.get("internal", []):
+                    clean_link = link["href"].split('#')[0]
+                    parsed = urlparse(clean_link)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+                    if parsed.netloc == DOMAIN and clean_link not in visited_urls:
+                        if any(clean_link.lower().endswith(ext) for ext in ['.jpg', '.png', '.css', '.js']):
+                            continue
 
-        # REMOVE NOISE
-        for tag in soup(['header', 'footer', 'nav', 'script', 'style', 'aside', 'form']):
-            tag.decompose()
+                        # Prioritize core informational pages
+                        if any(kw in clean_link.lower() for kw in IMPORTANT_KEYWORDS):
+                            urls_to_visit.insert(0, clean_link)
+                        elif clean_link not in urls_to_visit:
+                            urls_to_visit.append(clean_link)
 
-        title = soup.title.string.strip() if soup.title else "Untitled"
+            except Exception as e:
+                logging.warning(f"Failed to crawl {current_url}: {e}")
 
-        logging.info(f"Scraping: {title} | {current_url}")
+    logging.info(f" Scraping complete! Crawled {len(visited_urls)} pages.")
 
-        page_content = [
-            f"URL: {current_url}",
-            f"TITLE: {title}",
-            "=" * 50
-        ]
-
-        # ==============================
-        # EXTRACT TEXT (DEDUPED)
-        # ==============================
-        seen_text = set()
-
-        elements = soup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'li', 'td', 'th'])
-
-        for element in elements:
-            text = clean_text(element.get_text())
-
-            if text and text not in seen_text:
-                page_content.append(text)
-                seen_text.add(text)
-
-        # SAVE FILE
-        filename = sanitize_filename(current_url)
-
-        with open(os.path.join(TEXT_DIR, filename), "w", encoding="utf-8") as f:
-            f.write("\n".join(page_content))
-
-        # ==============================
-        # DISCOVER NEW LINKS
-        # ==============================
-        for link in soup.find_all("a", href=True):
-
-            absolute_url = urljoin(START_URL, link["href"]).split('#')[0]
-            parsed = urlparse(absolute_url)
-
-            if parsed.netloc != DOMAIN:
-                continue
-
-            if absolute_url in visited_urls:
-                continue
-
-            # FILTER OUT MEDIA FILES
-            if any(absolute_url.lower().endswith(ext) for ext in ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.css', '.js']):
-                continue
-
-            # PRIORITIZE IMPORTANT PAGES
-            if any(keyword in absolute_url.lower() for keyword in IMPORTANT_KEYWORDS):
-                if absolute_url not in urls_to_visit:
-                    urls_to_visit.append(absolute_url)
-            else:
-                # Optional: still crawl but lower priority
-                if absolute_url not in urls_to_visit:
-                    urls_to_visit.append(absolute_url)
-
-    except Exception as e:
-        logging.warning(f"Skipping {current_url} due to error: {e}")
-
-
-logging.info(f"Scraping completed. Total pages: {len(visited_urls)}")
+if __name__ == "__main__":
+    asyncio.run(main())

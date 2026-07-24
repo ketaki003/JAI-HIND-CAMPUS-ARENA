@@ -2,7 +2,7 @@
 import os
 import json
 import re
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import MarkdownTextSplitter
 
 # ==============================
 # CONFIG
@@ -11,35 +11,18 @@ BASE_DIR = "jai_hind_scraped_data"
 FOLDERS_TO_PROCESS = ["pages", "pdfs"]
 OUTPUT_FILE = "jai_hind_chunks.json"
 
-MIN_CHUNK_LENGTH = 80   # filter tiny useless chunks
+MIN_CHUNK_LENGTH = 60
 
-# ==============================
-# TEXT SPLITTER (optimized)
-# ==============================
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=800,          # better for MiniLM embeddings
-    chunk_overlap=120,
-    separators=["\n\n", "\n", ".", " ", ""]
+# Split along Markdown section headers
+text_splitter = MarkdownTextSplitter(
+    chunk_size=700,
+    chunk_overlap=100
 )
 
 compiled_chunks = []
 
-print("🚀 Starting chunking pipeline...")
-
-# ==============================
-# HELPERS
-# ==============================
-def clean_text(text):
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
-
-
 def extract_metadata(raw_content):
-    """
-    Extract URL and TITLE from scraper output
-    """
     lines = raw_content.split("\n")
-
     source_url = "https://www.jaihindcollege.com/"
     title = "Unknown"
 
@@ -52,22 +35,19 @@ def extract_metadata(raw_content):
     return source_url, title
 
 
-# ==============================
-# MAIN PROCESS
-# ==============================
-for sub_folder in FOLDERS_TO_PROCESS:
+print(" Starting Markdown-aware chunking pipeline...")
 
+for sub_folder in FOLDERS_TO_PROCESS:
     folder_path = os.path.join(BASE_DIR, sub_folder)
 
     if not os.path.exists(folder_path):
-        print(f"⚠️ Skipping missing folder: {folder_path}")
+        print(f" Skipping missing folder: {folder_path}")
         continue
 
-    print(f"\n📂 Processing folder: {sub_folder}")
+    print(f"\n Processing folder: {sub_folder}")
 
     for file_name in os.listdir(folder_path):
-
-        if not file_name.endswith(".txt"):
+        if not (file_name.endswith(".md") or file_name.endswith(".txt")):
             continue
 
         file_path = os.path.join(folder_path, file_name)
@@ -79,60 +59,46 @@ for sub_folder in FOLDERS_TO_PROCESS:
             if not raw_content.strip():
                 continue
 
-            # ==============================
-            # EXTRACT METADATA
-            # ==============================
             source_url, title = extract_metadata(raw_content)
 
-            # ==============================
-            # CLEAN CONTENT
-            # ==============================
-            cleaned_content = clean_text(raw_content)
+            # Separate metadata header from body
+            content_body = "\n".join([
+                line for line in raw_content.split("\n") 
+                if not line.startswith("URL:") and not line.startswith("TITLE:")
+            ]).strip()
 
-            # ==============================
-            # SPLIT INTO CHUNKS
-            # ==============================
-            chunks = text_splitter.split_text(cleaned_content)
+            chunks = text_splitter.split_text(content_body)
 
             for chunk in chunks:
-                chunk = clean_text(chunk)
+                chunk_clean = chunk.strip()
 
-                # Skip useless chunks
-                if len(chunk) < MIN_CHUNK_LENGTH:
+                if len(chunk_clean) < MIN_CHUNK_LENGTH:
                     continue
 
                 compiled_chunks.append({
-                    "content": chunk,
+                    "content": chunk_clean,
                     "source_url": source_url,
                     "title": title,
                     "type": "pdf" if sub_folder == "pdfs" else "webpage"
                 })
 
         except Exception as e:
-            print(f"⚠️ Error processing {file_name}: {e}")
+            print(f" Error processing {file_name}: {e}")
 
-
-# ==============================
-# REMOVE DUPLICATE CHUNKS
-# ==============================
-print("\n🧹 Removing duplicate chunks...")
-
+# Deduplication
+print("\n Removing duplicate chunks...")
 unique_chunks = []
-seen = set()
+seen_hashes = set()
 
 for chunk in compiled_chunks:
-    content_hash = hash(chunk["content"])
-
-    if content_hash not in seen:
+    chunk_hash = hash(chunk["content"])
+    if chunk_hash not in seen_hashes:
         unique_chunks.append(chunk)
-        seen.add(content_hash)
+        seen_hashes.add(chunk_hash)
 
-# ==============================
-# SAVE OUTPUT
-# ==============================
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     json.dump(unique_chunks, f, ensure_ascii=False, indent=2)
 
-print(f"\n✅ Chunking complete!")
-print(f"📊 Total chunks: {len(unique_chunks)}")
-print(f"💾 Saved to: {OUTPUT_FILE}")
+print(f"\n Chunking complete!")
+print(f" Total unique chunks generated: {len(unique_chunks)}")
+print(f" Output saved to: {OUTPUT_FILE}")
