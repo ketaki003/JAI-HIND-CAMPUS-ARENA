@@ -1,0 +1,3 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/06/Notice-for-SY-TY-Students-Extension-of-Date-for-Submission-of-Admission-Form.pdf
+TITLE: PDF Document
+

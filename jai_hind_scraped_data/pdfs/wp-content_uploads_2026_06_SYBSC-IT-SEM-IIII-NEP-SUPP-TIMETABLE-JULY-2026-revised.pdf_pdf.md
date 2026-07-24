@@ -1,0 +1,3 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/06/SYBSC-IT-SEM-IIII-NEP-SUPP-TIMETABLE-JULY-2026-revised.pdf
+TITLE: PDF Document
+

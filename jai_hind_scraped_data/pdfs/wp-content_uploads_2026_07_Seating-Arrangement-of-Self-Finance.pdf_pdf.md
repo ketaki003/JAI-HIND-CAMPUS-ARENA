@@ -1,0 +1,3 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/07/Seating-Arrangement-of-Self-Finance.pdf
+TITLE: PDF Document
+

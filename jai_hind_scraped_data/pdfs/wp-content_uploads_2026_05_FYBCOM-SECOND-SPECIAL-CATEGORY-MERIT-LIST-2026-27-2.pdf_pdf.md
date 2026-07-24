@@ -1,0 +1,49 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/05/FYBCOM-SECOND-SPECIAL-CATEGORY-MERIT-LIST-2026-27-2.pdf
+TITLE: PDF Document
+
+Candidates listed below are called for admission on 01.06.2026 to 03.06.2026 from 10.30 am to 2.00 
+pm and are required to report with the printed copies of the documents as listed in Annexure 'B' of the 
+Admission Notice along with your Admission Form and University Pre-Admission Form for 
+Verification and Submission in order to finalise your admission. 
+JAI HIND COLLEGE 
+BASANTSING INSTITUTE OF SCIENCE, J.T. LALVANI COLLEGE OF COMMERCE & SHEILA GOPAL 
+RAHEJA COLLEGE OF MANAGEMENT (EMPOWERED AUTONOMOUS) 
+FIRST YEAR DEGREE ADMISSIONS  : - 2026 - 2027 
+F.Y.B.COM. (SECOND MERIT LIST) 
+( SPECIAL CATEGORY ) 
+Students whose names appear in the Second Merit List for the Bachelors of Commerce program are 
+provisionally selected for admission , subject to fulfillment of all eligibility criteria and successful 
+completion of the document verification  process. All candidates whose name appear on the Merit 
+List must login to the Jai Hind College Admission Portal  and complete the following steps: 
+Important Note : Being on the list does not guarantee admission and is subject to submission 
+of the required documents.  Candidates are advised to adhere to all  deadlines and instructions 
+provided. Failure to comply  will result in cancellation of the Provisional Admission  offer. For any 
+queries contact  : 
+Commerce: admissions.commerce@jaihindcollege.edu.in 
+1) Upload the required documents  as specified in 
+Annexure 'B'                                                                                                               
+2) Upload the University of Mumbai Pre-Admission Enrollment Form  
+( This is mandatory for admission processing)                                                                                                                                                                                  
+3)  Upload the signed Undertaking Form  as per Annexure 'C' 
+( This confirms provisional admission as per University of Mumbai guidelines) 
+Note : -  Subject combinations (Major / Minor) will be alloted on the basis of students' Std. XII 
+marks and as per the availability of seats in each subject. 
+Venue : 2nd Floor,  Room No.217,  Main Building 
+Thereafter on activating the portal for fees payment the students will receive an email to pay the fees 
+online . You are required to pay the fees online through Debit Card / Credit Card / Net Banking 
+between 01.06.2026 to 03.06.2026 upto 5.00 pm in order to confirm your admission. 
+
+Sr. 
+No. Application No. Name of the Candidate Class XII Aggregate Percentage 
+1 2026/FYBCom/Aid_1673 MEHEK PARMAR 85.60 
+2 2026/FYBCom/Aid_1550 SHAURYA NANGIA 82.80 
+3 2026/FYBCom/Aid_328 YASHVEER SINGH MARWAH 81.60 
+4 2026/FYBCom/Aid_1658 DIVYAN ZENISH CHHEDA 89.00 
+5 2026/FYBCom/Aid_1249 SAHAJ PATODI 85.67 
+6 2026/FYBCom/Aid_462 PRIYANSHU PRANAY BHARGAVA 85.50 
+7 2026/FYBCom/Aid_1135 SOURABH YASHPAL NEGI 83.17 
+8 2026/FYBCom/Aid_1276 PRATHAMESH NANDGOPAL AGARKAR 82.67 
+9 2026/FYBCom/Aid_977 BENISHA AIDEO 85.00 
+Defence / Ex-Servicemen 
+Sports/Cultural ( District/State/National level ) 
+Transferred ( Govt. Officers on Transfer ) 

@@ -1,0 +1,19 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/05/FYBDS-SECOND-MERIT-LIST-2026-27.pdf
+TITLE: PDF Document
+
+JAI HIND COLLEGE  BASANTSING INSTITUTE OF SCIENCE & J. T. LALVANI COLLEGE OF COMMERCE and SHEILA GOPAL RAHEJA COLLEGE OF MANAGEMENT   EMPOWERED AUTONOMOUS (Affiliated to the University of Mumbai)  30.05.2026                           Second Merit List – FYBDS (2026–2027) Students whose names appear in the Second Merit List for the B.Com. (Digital Strategy) (BDS) program are provisionally selected for admission, subject to: fulfillment of all eligibility criteria and successful completion of the document verification process. All candidates whose names appear on the merit list must log in to the Jai Hind College Admission Portal  https://datavista.in/cms/student/Ext/auth/register_DV.php?sectionmaster_Id=26 and complete the following steps: 1. Upload the required documents as specified in Annexure ‘B’ 2. Upload the University of Mumbai Pre-Admission Enrollment Form 3. Upload the signed Undertaking Form as per Annexure ‘C’   Students will receive an official email invitation with details of a virtual interaction and document verification session with the Admission Committee. Following successful verification, the admission portal will be activated to enable online fee payment Important Note: Name on the list does not guarantee admission. Subject to producing necessary documents.  Candidates are strongly advised to adhere to all deadlines and instructions provided. Failure to comply will result in cancellation of the provisional admission offer. For any queries, contact:  admissions.commerce.mgmt@jaihindcollege.edu.in. For complete details and required documentation, please refer to the official admission notice dated 26/05/2026 on www.jaihindcollege.com.  
+
+FYBDS – SECOND MERIT LIST (2026-27) OPEN CATEGORY   FORM NUMBER NAME ENTRANCE EXAMINATION MARKS (100) 
+CLASS 12TH PERCENTAGE AGGREGATE PERCENTAGE (50% ENTRANCE SCORE+ 50% 12TH CLASS PERCENTAGE) 2026/FYBDS/SFC_166 SANIA SHAIKH 88 89.60 88.80 2026/FYBDS/SFC_128 GAURIKA SANKHLA 89 88.20 88.60 2026/FYBDS/SFC_43 INSHA ZOYA AHMED 93 84.17 88.58 2026/FYBDS/SFC_87 KANAK SONI 91 86.00 88.50 2026/FYBDS/SFC_89 SHARANYAA 88 88.75 88.38 2026/FYBDS/SFC_157 ANSARI MARIYA KALIM AHMED 91 85.67 88.34 2026/FYBDS/SFC_100 PALAK SARNA 86 90.33 88.16 2026/FYBDS/SFC_208 AARYA MANISH JAIN 89 87.20 88.10 2026/FYBDS/SFC_79 BHAVINI KHANDELWAL 85 91.00 88.00 2026/FYBDS/SFC_5 VISMAYA VISHWANATHAN 88 87.83 87.92 2026/FYBDS/SFC_129 JASNAIN HARMEET AWAL 90 85.60 87.80 2026/FYBDS/SFC_77 BORATE SUJIT SUBHASH 89 86.50 87.75 2026/FYBDS/SFC_81 DRISHTI PRITESH SHAH 88 87.50 87.75          
+
+FYBDS - SECOND MERIT LIST (2026-27) SINDHI CATEGORY  FORM NUMBER NAME ENTRANCE EXAMINATION MARKS (100) CLASS 12TH PERCENTAGE AGGREGATE PERCENTAGE (50% ENTRANCE SCORE+ 50% 12TH CLASS PERCENTAGE) 2026/FYBDS/SFC_8 VANIJ RAJESH MAKHIJA 86 74 80 2026/FYBDS/SFC_69 ANANYA MALANG 88 70.2 79.1 2026/FYBDS/SFC_117 KUSH ASNANI 91 67.2 79.1 2026/FYBDS/SFC_213 PRADITYA AHUJA 84 72.4 78.2 2026/FYBDS/SFC_41 DIVINA MOTWANI 77 79 78 2026/FYBDS/SFC_215 NIKHIL KUNDLANI 93 62.4 77.7 
+2026/FYBDS/SFC_223 KANAK BHAWNANI 78 77.4 77.7 
+2026/FYBDS/SFC_1 KASHISH KISHAN NATHANI 85 70.17 77.59 
+2026/FYBDS/SFC_167 PIYUSH VINOD BASANTWANI 71 82.83 76.92 
+2026/FYBDS/SFC_152 MOHIT SUNIL GULABANI 93 60.5 76.75 
+2026/FYBDS/SFC_175 VANSHIKA NAGWANI 84 68.2 76.1 
+2026/FYBDS/SFC_14 BHAVYA TARUN MACKDANI 69 82.83 75.92 
+2026/FYBDS/SFC_193 PRAKHAR TANWANI 83 66.2 74.6 
+2026/FYBDS/SFC_130 HARDIK SHIVNANI 85 63.83 74.42    
+
+FYBDS - SECOND MERIT LIST (2026-27) SPECIAL CATEGORY  FORM NUMBER NAME 2026/FYBIA/SFC_197 RAJVEER VINAY CHAUHAN   NOTE: The Third merit list, if any, will be displayed on 04.06.2026   

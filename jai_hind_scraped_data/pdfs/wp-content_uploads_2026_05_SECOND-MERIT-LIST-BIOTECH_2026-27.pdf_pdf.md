@@ -1,0 +1,96 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/05/SECOND-MERIT-LIST-BIOTECH_2026-27.pdf
+TITLE: PDF Document
+
+Sr. 
+No. Application No. Class XII Aggregate
+Percentage
+1 2026/FYBScBT/SFC_168 81.2
+Sr. 
+No. Application No. Class XII Aggregate
+Percentage
+1 2026/FYBScBT/SFC_77 87.6
+KRIPA ASHWIN DESHMUKH
+Important Note : Name on the list does not guarantee admission, subject to producing necessary documents . 
+Candidates are strongly advised to adhere to all  deadlines and instructions provided. Failure to comply will result 
+in cancellation of the Provisional Admission offer. For any queries contact 
+admissions.science@jaihindcollege.edu.in
+For complete details and required documentation please refer to the official Admission Notice dated 05.05.2026
+(Affiliated to University Mumbai)
+Candidates whose names appear in the Second Merit List for the Bachelors of Biotechnology program are 
+provisionally selected for admission, subject to fulfillment of all eligibility criteria and successful completion of 
+the document verification process. All candidates whose name appear on the Merit List must login to the Jai Hind 
+College Admission Portal and complete the following steps: 
+1) Upload the required documents as specified in Annexure 'B'                                                                                                               
+Students will receive an official email invitation with details of a virtual interaction and document verification 
+session with the Admission Committee. Following successful verification, the Admission Portal will be 
+activated to enable online fee payment. 
+Name of the Candidate 
+GENERAL CATEGORY
+Name of the Candidate 
+RUHAN PARYANI
+SINDHI MINORITY
+JAI HIND COLLEGE
+BASANTSING INSTITUTE OF SCIENCE, J.T. LALVANI COLLEGE OF COMMERCE & SHEILA GOPAL RAHEJA 
+COLLEGE OF MANAGEMENT 
+EMPOWERED AUTONOMOUS
+Second Merit List - FY Biotechnology (2026 - 2027)
+2) Upload the University of Mumbai Pre-Admission Enrollment Form                                                              
+(This is mandatory for admission processing)                                                                                                                                                                                  
+3) Upload the signed Undertaking Form as per Annexure 'C'                                                                                                                     
+( This confirms provisional admission as per University of Mumbai guidelines)
+
+2 2026/FYBScBT/SFC_297 87.6
+3 2026/FYBScBT/SFC_347 87.6
+4 2026/FYBScBT/SFC_18 87.5
+5 2026/FYBScBT/SFC_244 87.33
+6 2026/FYBScBT/SFC_46 87.2
+7 2026/FYBScBT/SFC_325 87.2
+8 2026/FYBScBT/SFC_29 87.17
+9 2026/FYBScBT/SFC_240 87.17
+10 2026/FYBScBT/SFC_42 86.8
+11 2026/FYBScBT/SFC_332 86.6
+12 2026/FYBScBT/SFC_217 86.5
+13 2026/FYBScBT/SFC_209 86.4
+14 2026/FYBScBT/SFC_65 86.33
+15 2026/FYBScBT/SFC_78 86.17
+16 2026/FYBScBT/SFC_117 86.17
+17 2026/FYBScBT/SFC_360 86.17
+18 2026/FYBScBT/SFC_260 85.83
+19 2026/FYBScBT/SFC_40 85.67
+20 2026/FYBScBT/SFC_269 85.6
+21 2026/FYBScBT/SFC_296 85.5
+22 2026/FYBScBT/SFC_129 85.4
+23 2026/FYBScBT/SFC_166 85.4
+ANUSHRI MANDLOI
+KASHVI MEHTA
+KASHAF MOHAMMED TANVEER SIDDIQUE
+RAI ANSH NEERAJ
+DEBTHIRTHO SEN
+RUHANA KHANNA
+MOHIT HARISH POOJARI
+MEHAL SATISH VARADKAR
+AARYA KETAN HERWATTA
+AISHI DHAR
+DRIYA UMESH KANUGO
+RAJVI RAJESHWAR NAIK
+IJYA
+KAAVYA SACHIN YESAJI
+HARDI TARALKUMAR DESAI
+ADITI GANGADHAR CHUKKALA
+SOMYA SURAVI PRADHAN
+ANSARI NABIHA MOHD REHAN
+MIHI UPADHYAY
+VAISHNAVI SINGH
+TEESHA MADHAN
+HARSHI
+
+24 2026/FYBScBT/SFC_256 85.33
+25 2026/FYBScBT/SFC_322 85.17
+26 2026/FYBScBT/SFC_419 85.17
+27 2026/FYBScBT/SFC_368 85
+28 2026/FYBScBT/SFC_398 85
+KRISHNA SANTOSH KAIMAL
+VIDYUT HARISH SHETTY
+SWARA AMIT JOSHI
+SAGARE SHREYA SANTOSH
+SAMARA BASIL PEREIRA

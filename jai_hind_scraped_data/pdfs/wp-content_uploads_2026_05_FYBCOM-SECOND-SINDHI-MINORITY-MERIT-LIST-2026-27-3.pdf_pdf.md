@@ -1,0 +1,53 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/05/FYBCOM-SECOND-SINDHI-MINORITY-MERIT-LIST-2026-27-3.pdf
+TITLE: PDF Document
+
+Sr. 
+No. Application No. Name of the Candidate Class XII Aggregate Percentage 
+1 2026/FYBCom/Aid_1052 KHYATI JESWANI 91.80 
+JAI HIND COLLEGE 
+BASANTSING INSTITUTE OF SCIENCE, J.T. LALVANI COLLEGE OF COMMERCE & SHEILA GOPAL 
+RAHEJA COLLEGE OF MANAGEMENT (EMPOWERED AUTONOMOUS) 
+FIRST YEAR DEGREE ADMISSIONS  : - 2026 - 2027 
+F.Y.B.COM. (SECOND MERIT LIST) 
+Important Note : Being on the list does not guarantee admission and is subject to 
+submission of the required documents.  Candidates are advised to adhere to all  deadlines 
+and instructions provided. Failure to comply  will result in cancellation of the Provisional 
+Admission  offer. For any queries contact  : 
+Commerce: admissions.commerce@jaihindcollege.edu.in 
+Note : -  Subject combinations (Major / Minor) will be alloted on the basis of students' Std. XII 
+marks and as per the availability of seats in each subject. 
+Venue : 2nd Floor,  Room No.217,  Main Building 
+Thereafter on activating the portal for fees payment the students will receive an email to pay the 
+fees online . You are required to pay the fees online through Debit Card / Credit Card / Net 
+Banking between 01.06.2026 to 03.06.2026 upto 5.00 pm in order to confirm your admission. 
+Candidates listed below are called for admission on 01.06.2026 to 03.06.2026 from                    
+10.30 am to 2.00 pm and are required to report with the printed copies of the documents as listed 
+in Annexure 'B' of the Admission Notice along with your Admission Form and University Pre- 
+Admission Form for Verification and Submission in order to finalise your admission. 
+( SINDHI MINORITY ) 
+Students whose names appear in the Second Merit List for the Bachelors of Commerce 
+program are provisionally selected for admission , subject to fulfillment of all eligibility 
+criteria and successful completion of the document verification  process. All candidates 
+whose name appear on the Merit List must login to the Jai Hind College Admission Portal 
+and complete the following steps: 
+1) Upload the required documents  as specified in 
+Annexure 'B'                                                                                                               
+2) Upload the University of Mumbai Pre-Admission Enrollment Form 
+ ( This is mandatory for admission processing)                                                                                                                                                                                  
+3)  Upload the signed Undertaking Form  as per Annexure 'C' 
+( This confirms provisional admission as per University of Mumbai guidelines) 
+
+Sr. 
+No. Application No. Name of the Candidate Class XII Aggregate Percentage 
+2 2026/FYBCom/Aid_822 UJJVAL MULANI 89.17 
+3 2026/FYBCom/Aid_732 BHAKTI AGRAWANI 88.40 
+4 2026/FYBCom/Aid_1115 CHANDWANI PRATHAM GIRISH 77.83 
+5 2026/FYBCom/Aid_1650 CHANDWANI PRATHAM BINNI 70.33 
+6 2026/FYBCom/Aid_1500 JAYESH MANOJ KARIA 66.17 
+7 2026/FYBCom/Aid_1119 BALWANI LAKSH SUNIL 66.00 
+8 2026/FYBCom/Aid_383 ASHLESH BHATIYA 62.00 
+9 2026/FYBCom/Aid_1058 AMAN 60.80 
+10 2026/FYBCom/Aid_530 SIDDHARTH DEVANG BHATIA 57.40 
+11 2026/FYBCom/Aid_90 ANNIE RAVI LALWANI 49.83 
+12 2026/FYBCom/Aid_1528 LACHHANI KARTIK HEMANT 45.00 
+13 2026/FYBCom/Aid_1045 MANWANI MANISH SURAJ 44.83 

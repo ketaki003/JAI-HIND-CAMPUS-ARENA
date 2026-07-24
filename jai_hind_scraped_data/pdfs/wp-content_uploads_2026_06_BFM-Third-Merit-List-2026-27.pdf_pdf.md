@@ -1,0 +1,106 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/06/BFM-Third-Merit-List-2026-27.pdf
+TITLE: PDF Document
+
+ 
+JAI  HIND  COLLEGE  BASANTSING  INSTITUTE  OF  SCIENCE,  J.T.  LALVANI  COLLEGE  OF  COMMERCE  &  SHEILA  GOPAL  RAHEJA  COLLEGE  OF  MANAGEMENT
+ 
+EMPOWERED  AUTONOMOUS
+ 
+(Affiliated  to  University  Mumbai)
+  
+Third  Merit  List  -  FYBFM  (2026  -  2027)
+ 
+Students  whose  names  appear  in  the  First  Merit  List  for  the  Bachelors  of  Commerce  Financial  Markets  program  are  provisionally  selected  for  admission,  subject  to  fulfillment  of  all  eligibility  criteria  and  successful  completion  of  the  document  verification  process.  All  candidates  whose  name  appear  on  the  Merit  List  must  login  to  the  Jai  Hind  College  Admission  Portal  and  complete  the  following  steps:
+ 
+1)  Upload  the  required  documents  as  specified  in  Annexure  'B'
+ 
+2)  Upload  the  University  of  Mumbai  Pre-Admission  Enrollment  Form  (This  is  mandatory  for  admission  processing)
+ 
+3)  Upload  the  signed  Undertaking  Form  as  per  Annexure  'C'  ( This  confirms  provisional  admission  as  per  University  of  Mumbai  guidelines)
+ 
+Students  will  receive  an  official  email  invitation  with  details  of  a  virtual  interaction  and  document  verification  session  with  the  Admission  Committee.  Following  successful  verification,  the  Admission  Portal  will  be  activated  to  enable  online  fee  payment.
+ 
+Important  Note  :  Name  on  the  list  does  not  guarantee  admission,  subject  to  producing  necessary  documents.  Candidates  are  strongly  advised  to  adhere  to  all  deadlines  and  instructions  provided.  Failure  to  comply  will  result  in  cancellation  of  the  Provisional  Admission  offer.   For  any  queries  contact:  admissions.commerce.mgmt@jaihindcollege.edu.in
+ 
+For  complete  details  and  required  documentation  please  refer  to  the  official  Admission  Notice  dated  05.5.2026
+  
+
+ 
+F.Y.B.F.M  -  AY  2026-27  Open
+ 
+Sr.  No.
+ 
+Name
+ 
+Application  Number
+ 
+12th  %
+ 
+CEE  Score(100  Marks)
+ 
+Aggregate  Percentage  (50%  of  Entrance  Examination  +  50%  of  class  12th  aggregate  percentage)
+ 
+1
+ 
+ISHDEEP  SINGH  KANWALDEEP  SINGH  KOHLI  
+2026/FYBFM/SFC_123  90.17  91  90.58  
+2
+ NEIV  SANJAY  JAIN  2026/FYBFM/SFC_242  88  93  90.5  
+3
+ AADYA  DWIVEDI  2026/FYBFM/SFC_370  92  89  90.5  
+4
+ MISTY  KIRANKUMAR  PORWAL  2026/FYBFM/SFC_239  90.83  90  90.42  
+5
+ RAMBHIA  ZENA  VIPUL  2026/FYBFM/SFC_551  86.83  94  90.42  
+6
+ NISHTHA  ROHIT  JAIN  2026/FYBFM/SFC_339  89.83  91  90.42  
+7
+ RIDAAN  MANOJ  JAIN  2026/FYBFM/SFC_294  86.83  94  90.42  
+8
+ ANGEL  MERCY  NOBBY  2026/FYBFM/SFC_269  85.8  95  90.4  
+9
+ PRATHAM  MAHESHWARI  2026/FYBFM/SFC_153  88.8  92  90.4  
+10  AARUSH  AMIT  RATHOD  2026/FYBFM/SFC_469  91.67  89  90.34  
+11  OM  CHANDRESH  JAIN  2026/FYBFM/SFC_444  89.67  91  90.34  
+12  VIDUSHI  DHANUKA  2026/FYBFM/SFC_616  88.67  92  90.34  
+13  PRISHA  MEHUL  SHAH  2026/FYBFM/SFC_463  86.67  94  90.34  
+14  ARNAY  JAIN  2026/FYBFM/SFC_283  88.6  92  90.3  
+15  ARYAN  SHIRISH  KALE  2026/FYBFM/SFC_220  89.6  91  90.3  
+16  NIHAL  RAJESH  RAUT  2026/FYBFM/SFC_39  87.5  93  90.25  
+
+  
+F.Y.B.F.M  -  AY  2026-27  SINDHI
+ 
+Sr.  No.
+ 
+Name
+ 
+Application  Number
+ 
+12th  %
+ 
+CEE  Score(100  Marks)
+ 
+Aggregate  Percentage  (50%  of  Entrance  Examination  +  50%  of  class  12th  aggregate  percentage)
+ 
+1
+ 
+LAKSHYA  NARENDRA  LALWANI  
+2026/FYBFM/SFC_759  79.17  84  81.59  
+2
+ VASHISHTHA  ALREJA  2026/FYBFM/SFC_510  69  94  81.5  
+3
+ DHRUV  ARUN  KHATRI  2026/FYBFM/SFC_114  90.83  72  81.41  
+4
+ KAPIL  WADHWANI  2026/FYBFM/SFC_442  69.8  93  81.4  
+5
+ PUNJABI  ROSHAN  KISHORE  2026/FYBFM/SFC_330  84.67  78  81.34  
+6
+ SOHAM  HARESH  KHABRANI  2026/FYBFM/SFC_686  75.17  87  81.09  
+7
+ KRISHNA  DAS  AMIT  ROHIRA  2026/FYBFM/SFC_354  77.83  84  80.91  
+8  RHYTHM  CHUGH  2026/FYBFM/SFC_395  76.33  85  80.66  
+9  REET  NIRAJ  SABHNANI  2026/FYBFM/SFC_592  76.17  85  80.59  
+10  HAVISH  MANOJ  JETHWANI  2026/FYBFM/SFC_301  72.83  88  80.41  
+11  RAJPAL  MANAV  RAKESH  2026/FYBFM/SFC_323  82.83  77  79.91  
+12  HRIDAY  SADHWANI  2026/FYBFM/SFC_709  72  87  79.5     

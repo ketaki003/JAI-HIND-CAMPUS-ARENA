@@ -1,0 +1,5 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/07/Non-NEP_Practical_Timetable_Revised.pdf
+TITLE: PDF Document
+
+ 
+ 

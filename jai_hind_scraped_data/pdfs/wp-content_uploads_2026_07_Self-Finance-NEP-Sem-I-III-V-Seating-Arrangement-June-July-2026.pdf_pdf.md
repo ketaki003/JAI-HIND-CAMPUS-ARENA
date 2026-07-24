@@ -1,0 +1,3 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/07/Self-Finance-NEP-Sem-I-III-V-Seating-Arrangement-June-July-2026.pdf
+TITLE: PDF Document
+

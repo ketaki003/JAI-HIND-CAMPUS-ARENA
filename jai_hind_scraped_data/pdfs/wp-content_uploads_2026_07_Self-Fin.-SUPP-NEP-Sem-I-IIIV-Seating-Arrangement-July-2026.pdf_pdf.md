@@ -1,0 +1,3 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/07/Self-Fin.-SUPP-NEP-Sem-I-IIIV-Seating-Arrangement-July-2026.pdf
+TITLE: PDF Document
+

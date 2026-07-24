@@ -1,0 +1,3 @@
+URL: https://www.jaihindcollege.com/wp-content/uploads/2026/06/NEP-SUPP-EXAM-SEM-I-III-V-NOTICE-JUNE-2026.pdf
+TITLE: PDF Document
+
