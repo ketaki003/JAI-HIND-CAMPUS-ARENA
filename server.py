@@ -13,13 +13,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 
-# Explicitly import all modern Qdrant client components
+# Modern Qdrant client components
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from fastapi.middleware.cors import CORSMiddleware
-
-class ChatResponse(BaseModel):
-    answer: str
 
 # =============================================================
 # 1. ENHANCED PRODUCTION LOGGING SETUP
@@ -28,7 +25,6 @@ logger = logging.getLogger("rag_app")
 logger.setLevel(logging.INFO)
 
 if not logger.handlers:
-    # Detailed log format capturing timestamp, level, logger name, and thread/process info
     formatter = logging.Formatter(
         "[%(asctime)s] [%(levelname)s] [%(name)s] [Thread-%(thread)d] - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
@@ -180,7 +176,7 @@ async def list_conversation_summaries(user_id: str = "user1"):
         return summaries
 
 # =============================================================
-# 2. APPLICATION LIFECYCLE
+# 2. APPLICATION LIFECYCLE WITH MARKDOWN-AWARE INDEXING
 # =============================================================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -193,7 +189,7 @@ async def lifespan(app: FastAPI):
         qdrant_client = AsyncQdrantClient(path="./local_qdrant_storage")
 
         if not await qdrant_client.collection_exists(COLLECTION_NAME):
-            logger.info("Vector database index not detected. Compiling payload from chunks...")
+            logger.info("Vector database index not detected. Compiling payload from markdown chunks...")
             try:
                 with open("jai_hind_chunks.json", "r", encoding="utf-8") as f:
                     chunks_data = json.load(f)
@@ -211,34 +207,33 @@ async def lifespan(app: FastAPI):
             
             for item in chunks_data:
                 chunk_content = item.get("content", "").strip()
+                page_title = item.get("title", "Jai Hind College")
                 page_url = item.get("source_url", "https://www.jaihindcollege.com/")
                 source_type = item.get("type", "webpage")
                 
                 if not chunk_content:
                     continue
 
-                enriched_text = (
-                    f"College Name: Jai Hind College (Autonomous), Mumbai\n"
-                    f"Source Type: {source_type.upper()}\n"
-                    f"Source URL: {page_url}\n"
-                    f"Information Detail:\n{chunk_content}"
-                )
-            
-                dense_vector = model.encode(enriched_text).tolist()
+                # Structure text for vector embedding naturally with Markdown header
+                text_to_embed = f"# {page_title}\n\n{chunk_content}"
+                dense_vector = model.encode(text_to_embed).tolist()
+
                 points.append(
                     PointStruct(
                         id=global_id,
                         vector=dense_vector,
                         payload={
-                            "text": enriched_text,
-                            "source": page_url
+                            "text": chunk_content,
+                            "title": page_title,
+                            "source": page_url,
+                            "type": source_type
                         }
                     )
                 )
                 global_id += 1
                 
             await qdrant_client.upsert(collection_name=COLLECTION_NAME, wait=True, points=points)
-            logger.info(f"Local Qdrant index compiled with {global_id - 1} semantic blocks.")
+            logger.info(f"Local Qdrant index compiled with {global_id - 1} markdown blocks.")
         else:
             logger.info("Local Qdrant vector index loaded from disk storage successfully.")
             
@@ -274,7 +269,7 @@ class ChatResponse(BaseModel):
     answer: str
 
 # =============================================================
-# 4. CHAT ENDPOINT WITH DETAILED PRODUCTION LOGGING
+# 4. CHAT ENDPOINT
 # =============================================================
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
@@ -290,17 +285,15 @@ async def chat_endpoint(request: ChatRequest):
         logger.warning(f"[USER: {user_id} | SESSION: {session_id}] Blank query submission rejected.")
         raise HTTPException(status_code=400, detail="Question field cannot be blank.")
 
-    # 1. Log Incoming Request Details
     logger.info(f"==================== NEW INCOMING CHAT REQUEST ====================")
     logger.info(f"[REQUEST METADATA] User ID: '{user_id}' | Session ID: '{session_id}' | Model: '{active_model}'")
     logger.info(f"[USER QUERY] Character Length: {len(user_query)} | Content: \"{user_query}\"")
 
     try:
-        # Load conversation history context
         history = await retrieve_messages(user_id, session_id, limit=3)
         logger.info(f"[HISTORY] Loaded {len(history)} previous turns from SQLite history.")
 
-        # 2. Vector Embedding & Retrieval Latency Tracking
+        # Vector Search
         retrieval_start = time.time()
         query_dense = model.encode(user_query).tolist()
         hits = []
@@ -319,32 +312,34 @@ async def chat_endpoint(request: ChatRequest):
 
         retrieval_latency = round((time.time() - retrieval_start) * 1000, 2)
 
-        # 3. Log Retrieved Chunks, Scores, and Preview Content
-        retrieved_chunks = []
+        # Context Formatting for Markdown Chunks
+        formatted_context_list = []
         logger.info(f"[RETRIEVAL] Qdrant search finished in {retrieval_latency}ms. Retrieved {len(hits)} hits.")
 
         for idx, hit in enumerate(hits or [], start=1):
-            payload = getattr(hit, "payload", hit.get("payload") if isinstance(hit, dict) else None)
+            payload = getattr(hit, "payload", hit.get("payload") if isinstance(hit, dict) else {})
             score = getattr(hit, "score", "N/A")
             
             if isinstance(payload, dict) and payload.get("text"):
                 chunk_text = payload["text"]
+                title = payload.get("title", "Campus Information")
                 source_url = payload.get("source", "N/A")
-                chunk_size = len(chunk_text)
-                retrieved_chunks.append(chunk_text)
+                
+                # Format each retrieved chunk clearly for the LLM
+                formatted_block = f"### Source {idx}: {title}\nURL: {source_url}\n{chunk_text}"
+                formatted_context_list.append(formatted_block)
 
-                # Snippet preview for terminal / log readability
                 preview_snippet = chunk_text[:120].replace('\n', ' ') + "..."
                 logger.info(
-                    f"  ├─ [Chunk #{idx}] Score: {score} | Size: {chunk_size} chars | Source: {source_url}"
+                    f"  ├─ [Chunk #{idx}] Score: {score} | Title: '{title}' | Source: {source_url}"
                 )
                 logger.info(f"  │  Snippet: \"{preview_snippet}\"")
 
-        total_context_size = sum(len(c) for c in retrieved_chunks)
-        context = "\n\n".join(retrieved_chunks) if retrieved_chunks else "No relevant context found in local records."
-        logger.info(f"[CONTEXT SUMMARY] Total Injected Context Size: {total_context_size} characters across {len(retrieved_chunks)} chunks.")
+        context = "\n\n---\n\n".join(formatted_context_list) if formatted_context_list else "No relevant context found in local records."
+        total_context_size = sum(len(c) for c in formatted_context_list)
+        logger.info(f"[CONTEXT SUMMARY] Total Injected Context Size: {total_context_size} characters across {len(formatted_context_list)} chunks.")
 
-        # System Prompt Assembly
+        # Prompt Instructions
         system_instruction = (
             "You are a friendly, warm, and helpful senior student guide at Jai Hind College (Autonomous), Mumbai.\n"
             "Chat naturally like a real human student ambassador. Use first-person language ('I', 'we', 'our campus') "
@@ -372,7 +367,6 @@ async def chat_endpoint(request: ChatRequest):
             ollama_messages.append({"role": turn["role"], "content": turn["content"]})
         ollama_messages.append({"role": "user", "content": user_query})
 
-        # 4. LLM Generation Latency & Payload Tracking
         llm_start = time.time()
         async with httpx.AsyncClient(verify=False) as client:
             ollama_payload = {
@@ -406,7 +400,6 @@ async def chat_endpoint(request: ChatRequest):
         llm_latency = round((time.time() - llm_start) * 1000, 2)
         total_request_latency = round((time.time() - start_time) * 1000, 2)
 
-        # 5. Final Output & Telemetry Logging
         logger.info(f"[LLM GENERATION] Ollama call finished in {llm_latency}ms.")
         logger.info(f"[RESPONSE METRICS] Generated Answer Size: {len(bot_response)} chars | Total End-to-End Latency: {total_request_latency}ms")
         logger.info(f"[GENERATED ANSWER PREVIEW] \"{bot_response[:150].replace('\n', ' ')}...\"")

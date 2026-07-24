@@ -127,11 +127,11 @@ def start_new_chat(user_id, saved_conversations):
     
     return [], [], new_session_id, updated_saved, gr.update(choices=dropdown_choices, value="")
 
-with gr.Blocks() as demo:
+with gr.Blocks(title="Jai Hind College Assistant") as demo:
     gr.Markdown(
         """
-        # Jai Hind College Chatbot
-        Welcome to the official automated website assistant. Ask questions about courses, admissions, or campus details.
+        # Jai Hind College Assistant
+        Welcome to the official automated website assistant. Ask questions about courses, admissions, fees, or campus details.
         """
     )
 
@@ -141,15 +141,15 @@ with gr.Blocks() as demo:
     saved_conversations_state = gr.State(value=[])
 
     with gr.Row():
+        # Sidebar Options Column
         with gr.Column(scale=1):
-            gr.Markdown("### Sidebar")
+            gr.Markdown("### Control Panel")
             model_dropdown = gr.Dropdown(
                 choices=["tinyllama", "qwen2.5:0.5b"],
                 value="qwen2.5:0.5b",
                 label="Select Model",
             )
             
-            # Selector for execution mode
             mode_radio = gr.Radio(
                 choices=["RAG Pipeline (FastAPI)", "Direct API Call (Ollama)"],
                 value="RAG Pipeline (FastAPI)",
@@ -157,7 +157,7 @@ with gr.Blocks() as demo:
                 info="Choose between full RAG vector search or querying the raw LLM directly."
             )
 
-            new_chat_btn = gr.Button("➕ New Chat")
+            new_chat_btn = gr.Button("➕ New Chat", variant="secondary")
             
             gr.Markdown("#### Saved Conversations")
             saved_chats_dropdown = gr.Dropdown(
@@ -167,15 +167,25 @@ with gr.Blocks() as demo:
                 allow_custom_value=True,
             )
 
+        # Main Chat Window Column
         with gr.Column(scale=3):
-            chatbot = gr.Chatbot(height=550)
+            # Render chatbot with Markdown and line breaks support enabled
+            chatbot = gr.Chatbot(
+                height=550,
+                render_markdown=True,
+                line_breaks=True,
+                type="messages"
+            )
+            
             text_input = gr.Textbox(
                 placeholder="Ask about admissions, courses, fees, or campus info...",
                 show_label=False,
+                autofocus=True
             )
+            
             with gr.Row():
-                send_btn = gr.Button("Send")
-                clear_btn = gr.Button("Clear")
+                send_btn = gr.Button("Send", variant="primary")
+                clear_btn = gr.Button("Clear Context")
 
     demo.load(
         fn=lambda user_id: (
@@ -199,7 +209,7 @@ with gr.Blocks() as demo:
     ).then(lambda: "", None, text_input)
 
     saved_chats_dropdown.change(
-        load_selected_conversation,
+        load_selected_conversation, 
         inputs=[saved_chats_dropdown, user_id_state],
         outputs=[chatbot, chat_history_state, session_state]
     )
